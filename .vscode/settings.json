@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "相邻数对": "cpp"
+        "相邻数对": "cpp",
+        "iostream": "cpp"
     }
 }
