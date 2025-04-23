@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "相邻数对": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "cstdlib": "cpp"
     }
 }
