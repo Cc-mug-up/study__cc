@@ -2,41 +2,6 @@
 #include "stack.h"
 #include "stack.tcc"
 using namespace std;
-/*
- template<typename T>
- class Stack
- {
- private:
-     vector<T> elems;
-
- public:
-     void pop();
-     void push(T);
-     T gettop();
-     bool empty();
- };
- template<typename T>
- void Stack<T>::pop()
- {
-     elems.pop_back();
- }
-
- template<typename T>
- void Stack<T>::push(T elem)
- {
-     elems.push_back(elem);
- }
-
- template<typename T>
- bool Stack<T>::empty()
- {
-     return elems.empty();
- }
- template<typename T>
- T Stack<T>::gettop()
- {
-     return elems.back();
- }*/
 int main()
 {
     cout << "stack type:int" << endl;
