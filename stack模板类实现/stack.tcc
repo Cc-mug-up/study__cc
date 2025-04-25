@@ -1,5 +1,8 @@
 //#include<bits/stdc++.h>
-#include"stack.h"
+//#include"stack.h"
+
+#ifndef STACK_TCC
+#define STACK_TCC
 template<typename T>
 void Stack<T>::pop()
 {
@@ -22,3 +25,4 @@ T Stack<T>::gettop()
 {
     return elems.back();
 }
+#endif

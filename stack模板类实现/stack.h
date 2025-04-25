@@ -14,4 +14,5 @@ public:
     T gettop();
     bool empty();
 };
+#include"stack.tcc"
 #endif 

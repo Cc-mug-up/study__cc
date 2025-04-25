@@ -5,6 +5,10 @@
         "istream": "cpp",
         "ostream": "cpp",
         "cstdlib": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "string_view": "cpp",
+        "streambuf": "cpp",
+        "array": "cpp",
+        "string": "cpp"
     }
 }
