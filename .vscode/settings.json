@@ -9,6 +9,7 @@
         "string_view": "cpp",
         "streambuf": "cpp",
         "array": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "algorithm": "cpp"
     }
 }
