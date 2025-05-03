@@ -136,7 +136,7 @@ public:
 
         for (size_t i = size; i > index; i--)
         {
-            elements[i] = elements[i - 1];
+            elements[i] = elements[i - 1]; 
         }
         elements[index] = val;
         size++;
