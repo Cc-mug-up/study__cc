@@ -20,10 +20,9 @@
  * IN THE SOFTWARE.
  */
 
-
 /*-
- * A template class that implements a simple stack structure.
- * This demostrates how to use alloctor_traits (specifically with MemoryPool)
+ * 一个模板类，实现了简单的栈结构。
+ * 这个类演示了如何使用 allocator_traits（特别是与 MemoryPool 一起使用）
  */
 
 #ifndef STACK_ALLOC_H
@@ -31,67 +30,71 @@
 
 #include <memory>
 
+// 定义栈节点结构
 template <typename T>
 struct StackNode_
 {
-  T data;
-  StackNode_* prev;
+  T data;           // 节点存储的数据
+  StackNode_ *prev; // 指向下一个节点的指针
 };
 
-/** T is the object to store in the stack, Alloc is the allocator to use */
-template <class T, class Alloc = std::allocator<T> >
+// T 是存储在栈中的对象类型，Alloc 是使用的分配器类型
+template <class T, class Alloc = std::allocator<T>>
 class StackAlloc
 {
-  public:
-    typedef StackNode_<T> Node;
-    typedef typename Alloc::template rebind<Node>::other allocator;
+public:
+  typedef StackNode_<T> Node;                                     // 定义节点类型
+  typedef typename Alloc::template rebind<Node>::other allocator; // 定义节点分配器类型
 
-    /** Default constructor */
-    StackAlloc() {head_ = 0; }
-    /** Default destructor */
-    ~StackAlloc() { clear(); }
+  // 默认构造函数
+  StackAlloc() { head_ = 0; }
+  // 默认析构函数
+  ~StackAlloc() { clear(); }
 
-    /** Returns true if the stack is empty */
-    bool empty() {return (head_ == 0);}
+  // 判断栈是否为空
+  bool empty() { return (head_ == 0); }
 
-    /** Deallocate all elements and empty the stack */
-    void clear() {
-      Node* curr = head_;
-      while (curr != 0)
-      {
-        Node* tmp = curr->prev;
-        allocator_.destroy(curr);
-        allocator_.deallocate(curr, 1);
-        curr = tmp;
-      }
-      head_ = 0;
+  // 清空栈并释放所有元素
+  void clear()
+  {
+    Node *curr = head_;
+    while (curr != 0)
+    {
+      Node *tmp = curr->prev;
+      allocator_.destroy(curr);
+      allocator_.deallocate(curr, 1);
+      curr = tmp;
     }
+    head_ = 0;
+  }
 
-    /** Put an element on the top of the stack */
-    void push(T element) {
-      Node* newNode = allocator_.allocate(1);
-      allocator_.construct(newNode, Node());
-      newNode->data = element;
-      newNode->prev = head_;
-      head_ = newNode;
-    }
+  // 将元素压入栈顶
+  void push(T element)
+  {
+    Node *newNode = allocator_.allocate(1);
+    allocator_.construct(newNode, Node());
+    newNode->data = element;
+    newNode->prev = head_;
+    head_ = newNode;
+  }
 
-    /** Remove and return the topmost element on the stack */
-    T pop() {
-      T result = head_->data;
-      Node* tmp = head_->prev;
-      allocator_.destroy(head_);
-      allocator_.deallocate(head_, 1);
-      head_ = tmp;
-      return result;
-    }
+  // 弹出栈顶元素并返回
+  T pop()
+  {
+    T result = head_->data;
+    Node *tmp = head_->prev;
+    allocator_.destroy(head_);
+    allocator_.deallocate(head_, 1);
+    head_ = tmp;
+    return result;
+  }
 
-    /** Return the topmost element */
-    T top() { return (head_->data); }
+  // 返回栈顶元素
+  T top() { return (head_->data); }
 
-  private:
-    allocator allocator_;
-    Node* head_;
+private:
+  allocator allocator_; // 分配器实例
+  Node *head_;          // 栈顶指针
 };
 
 #endif // STACK_ALLOC_H

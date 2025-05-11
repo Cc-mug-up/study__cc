@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="GBK">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 1px solid black;
+            background-color: #fff;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="score">分数: 0</div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <script>
+        // 获取游戏画布元素
+        const canvas = document.getElementById('gameCanvas');
+        // 获取2D绘图上下文
+        const ctx = canvas.getContext('2d');
+
+        // 初始化贪吃蛇位置
+        let snake = [{x: 200, y: 200}, {x: 190, y: 200}, {x: 180, y: 200}];
+        // 初始化食物位置
+        let food = {x: 300, y: 300};
+        // 初始化贪吃蛇移动方向
+        let dx = 10;
+        let dy = 0;
+        // 贪吃蛇身体每个部分的大小
+        const snakeSize = 10;
+        // 画布上可以容纳的格子数量
+        const tileCount = canvas.width / snakeSize;
+        // 初始化分数
+        let score = 0;
+        // 游戏运行状态
+        let gameRunning = true;
+
+        // 清除画布
+        function clearBoard() {
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // 绘制贪吃蛇
+        function drawSnake() {
+            ctx.fillStyle = '#7DCE13';
+            snake.forEach(drawSnakePart);
+        }
+
+        // 绘制食物
+        function drawFood() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food.x, food.y, snakeSize, snakeSize);
+        }
+
+        // 绘制贪吃蛇身体的每个部分
+        function drawSnakePart(snakePart) {
+            ctx.fillRect(snakePart.x, snakePart.y, snakeSize, snakeSize);
+        }
+
+        // 移动贪吃蛇
+        function advanceSnake() {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head);
+
+            const didEatFood = snake[0].x === food.x && snake[0].y === food.y;
+            if (didEatFood) {
+                score += 10;
+                document.getElementById('score').innerText = '分数: ' + score;
+                createFood();
+            } else {
+                snake.pop();
+            }
+        }
+
+        // 根据按键改变贪吃蛇移动方向
+        function changeDirection(event) {
+            const LEFT_KEY = 37;
+            const RIGHT_KEY = 39;
+            const UP_KEY = 38;
+            const DOWN_KEY = 40;
+
+            const keyPressed = event.keyCode;
+            const goingUp = dy === -snakeSize;
+            const goingDown = dy === snakeSize;
+            const goingRight = dx === snakeSize;
+            const goingLeft = dx === -snakeSize;
+
+            if (keyPressed === LEFT_KEY && !goingRight) {
+                dx = -snakeSize;
+                dy = 0;
+            }
+            if (keyPressed === UP_KEY && !goingDown) {
+                dx = 0;
+                dy = -snakeSize;
+            }
+            if (keyPressed === RIGHT_KEY && !goingLeft) {
+                dx = snakeSize;
+                dy = 0;
+            }
+            if (keyPressed === DOWN_KEY && !goingUp) {
+                dx = 0;
+                dy = snakeSize;
+            }
+        }
+
+        // 随机创建食物位置
+        function createFood() {
+            food.x = Math.floor(Math.random() * tileCount) * snakeSize;
+            food.y = Math.floor(Math.random() * tileCount) * snakeSize;
+        }
+
+        // 检查贪吃蛇是否撞到自己或墙壁
+        function checkCollision(part) {
+            for (let i = 4; i < snake.length; i++) {
+                if (part.x === snake[i].x && part.y === snake[i].y) {
+                    return true;
+                }
+            }
+            const hitLeftWall = part.x < 0;
+            const hitRightWall = part.x >= canvas.width;
+            const hitTopWall = part.y < 0;
+            const hitBottomWall = part.y >= canvas.height;
+
+            return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+        }
+
+        // 游戏主循环
+        function main() {
+            if (!gameRunning) {
+                return;
+            }
+
+            if (checkCollision(snake[0])) {
+                gameRunning = false;
+                alert('游戏结束，你的分数是：' + score);
+                return;
+            }
+
+            clearBoard();
+            drawFood();
+            drawSnake();
+            advanceSnake();
+        }
+
+        // 设置游戏速度并开始游戏主循环
+        let speed = 100;
+        setInterval(main, speed);
+        // 监听按键事件以改变贪吃蛇移动方向
+        document.addEventListener('keydown', changeDirection);
+
+        createFood();
+    </script>
+</body>
+
+</html>

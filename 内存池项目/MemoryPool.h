@@ -26,71 +26,105 @@
 #include <climits>
 #include <cstddef>
 
+// 内存池类，用于高效地分配和释放固定大小的内存块
 template <typename T, size_t BlockSize = 4096>
 class MemoryPool
 {
-  public:
-    /* Member types */
-    typedef T               value_type;
-    typedef T*              pointer;
-    typedef T&              reference;
-    typedef const T*        const_pointer;
-    typedef const T&        const_reference;
-    typedef size_t          size_type;
-    typedef ptrdiff_t       difference_type;
-    typedef std::false_type propagate_on_container_copy_assignment;
-    typedef std::true_type  propagate_on_container_move_assignment;
-    typedef std::true_type  propagate_on_container_swap;
+public:
+  /* 成员类型定义 */
+  typedef T value_type;
+  typedef T *pointer;
+  typedef T &reference;
+  typedef const T *const_pointer;
+  typedef const T &const_reference;
+  typedef size_t size_type;
+  typedef ptrdiff_t difference_type;
+  typedef std::false_type propagate_on_container_copy_assignment;
+  typedef std::true_type propagate_on_container_move_assignment;
+  typedef std::true_type propagate_on_container_swap;
 
-    template <typename U> struct rebind {
-      typedef MemoryPool<U> other;
-    };
+  // 重新绑定模板类型
+  template <class U>
+  struct rebind
+  {
+    typedef MemoryPool<U> other;
+  };
 
-    /* Member functions */
-    MemoryPool() noexcept;
-    MemoryPool(const MemoryPool& memoryPool) noexcept;
-    MemoryPool(MemoryPool&& memoryPool) noexcept;
-    template <class U> MemoryPool(const MemoryPool<U>& memoryPool) noexcept;
+  /* 成员函数声明 */
+  // 构造函数
+  MemoryPool() noexcept;
+  // 拷贝构造函数
+  MemoryPool(const MemoryPool &memoryPool) noexcept;
+  // 移动构造函数
+  MemoryPool(MemoryPool &&memoryPool) noexcept;
+  // 从其他类型的内存池拷贝构造
+  template <class U>
+  MemoryPool(const MemoryPool<U> &memoryPool) noexcept;
 
-    ~MemoryPool() noexcept;
+  // 析构函数
+  ~MemoryPool() noexcept;
 
-    MemoryPool& operator=(const MemoryPool& memoryPool) = delete;
-    MemoryPool& operator=(MemoryPool&& memoryPool) noexcept;
+  // 删除拷贝赋值操作符
+  MemoryPool &operator=(const MemoryPool &memoryPool) = delete;
+  // 移动赋值操作符
+  MemoryPool &operator=(MemoryPool &&memoryPool) noexcept;
 
-    pointer address(reference x) const noexcept;
-    const_pointer address(const_reference x) const noexcept;
+  // 获取对象的地址
+  pointer address(reference x) const noexcept;
+  const_pointer address(const_reference x) const noexcept;
 
-    // Can only allocate one object at a time. n and hint are ignored
-    pointer allocate(size_type n = 1, const_pointer hint = 0);
-    void deallocate(pointer p, size_type n = 1);
+  // 分配内存，忽略 n 和 hint
+  pointer allocate(size_type n = 1, const_pointer hint = 0);
+  // 释放内存
+  void deallocate(pointer p, size_type n = 1);
 
-    size_type max_size() const noexcept;
+  // 返回最大可分配的元素数量
+  size_type max_size() const noexcept;
 
-    template <class U, class... Args> void construct(U* p, Args&&... args);
-    template <class U> void destroy(U* p);
+  // 在指定位置构造对象
+  template <class U, class... Args>
+  void construct(U *p, Args &&...args);
+  // 销毁指定位置的对象
+  template <class U>
+  void destroy(U *p);
 
-    template <class... Args> pointer newElement(Args&&... args);
-    void deleteElement(pointer p);
+  // 分配并构造一个新元素
+  template <class... Args>
+  pointer newElement(Args &&...args);
+  // 删除并释放一个元素
+  void deleteElement(pointer p);
 
-  private:
-    union Slot_ {
-      value_type element;
-      Slot_* next;
-    };
+private:
+  // 内存槽联合体，用于存储对象或指向下一个空闲槽
+  union Slot_
+  {
+    value_type element;
+    Slot_ *next;
+  };
 
-    typedef char* data_pointer_;
-    typedef Slot_ slot_type_;
-    typedef Slot_* slot_pointer_;
+  // 数据指针类型
+  typedef char *data_pointer_;
+  // 内存槽类型
+  typedef Slot_ slot_type_;
+  // 内存槽指针类型
+  typedef Slot_ *slot_pointer_;
 
-    slot_pointer_ currentBlock_;
-    slot_pointer_ currentSlot_;
-    slot_pointer_ lastSlot_;
-    slot_pointer_ freeSlots_;
+  // 指向当前内存块的指针
+  slot_pointer_ currentBlock_;
+  // 指向当前可用内存槽的指针
+  slot_pointer_ currentSlot_;
+  // 指向当前内存块中最后一个内存槽的指针
+  slot_pointer_ lastSlot_;
+  // 指向空闲内存槽链表的指针
+  slot_pointer_ freeSlots_;
 
-    size_type padPointer(data_pointer_ p, size_type align) const noexcept;
-    void allocateBlock();
+  // 调整指针以满足对齐要求
+  size_type padPointer(data_pointer_ p, size_type align) const noexcept;
+  // 分配新的内存块
+  void allocateBlock();
 
-    static_assert(BlockSize >= 2 * sizeof(slot_type_), "BlockSize too small.");
+  // 静态断言，确保块大小足够大以容纳两个内存槽
+  static_assert(BlockSize >= 2 * sizeof(slot_type_), "BlockSize too small.");
 };
 
 #include "MemoryPool.tcc"
