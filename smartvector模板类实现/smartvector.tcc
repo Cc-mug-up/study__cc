@@ -57,4 +57,5 @@ template<typename T>
 void smartvector<T>::pop(){
     size--;
 }
+
 #endif

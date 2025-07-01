@@ -10,7 +10,6 @@ int main()
         ll d, k;
         vector<pair<ll, ll>> d_e;
         cin >> d >> k;
-        ll o = d;
         for (ll i = 2; i <= d / i; i++)
         {
             int e = 0;

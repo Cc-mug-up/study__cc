@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书管理系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/css/layui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 12px;
+            font-size: 30px;
+            color: #ffd54f;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+        
+        .user-info i {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+        
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 62px);
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+        
+        .menu {
+            padding: 20px 0;
+        }
+        
+        .menu-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-left: 4px solid #3498db;
+        }
+        
+        .menu-item.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            border-left: 4px solid #3498db;
+        }
+        
+        .menu-item i {
+            margin-right: 15px;
+            width: 24px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+            position: relative;
+        }
+        
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background: #3498db;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        
+        .card-header {
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #1e88e5);
+            color: white;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b, #a52517);
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #27ae60, #219150);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-right: 8px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .action-btn i {
+            font-size: 14px;
+        }
+        
+        .btn-edit {
+            background: #3498db;
+        }
+        
+        .btn-edit:hover {
+            background: #2980b9;
+        }
+        
+        .btn-delete {
+            background: #e74c3c;
+        }
+        
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+        
+        .btn-view {
+            background: #2ecc71;
+        }
+        
+        .btn-view:hover {
+            background: #27ae60;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        table th {
+            background: #3498db;
+            color: white;
+            text-align: left;
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        table tr:hover td {
+            background-color: #f0f7ff;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 42px;
+            margin-right: 20px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .books .stat-icon {
+            background-color: rgba(52, 152, 219, 0.15);
+            color: #3498db;
+        }
+        
+        .readers .stat-icon {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+        }
+        
+        .borrowed .stat-icon {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+        
+        .available .stat-icon {
+            background-color: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+        }
+        
+        .stat-content h3 {
+            font-size: 18px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .stat-content p {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 25px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            height: 380px;
+        }
+        
+        .recent-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            height: 380px;
+        }
+        
+        .recent-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .recent-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .recent-item {
+            display: flex;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .recent-item:hover {
+            background: #f0f7ff;
+            transform: translateX(5px);
+        }
+        
+        .recent-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #3498db;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .recent-content {
+            flex: 1;
+        }
+        
+        .recent-content h4 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .recent-content p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 600px;
+            max-width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalAppear 0.4s ease;
+        }
+        
+        @keyframes modalAppear {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            color: #95a5a6;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: #e74c3c;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 22px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 30px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+                font-size: 22px;
+            }
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-available {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+        }
+        
+        .status-borrowed {
+            background: rgba(231, 76, 60, 0.15);
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-book"></i>
+            <span>图书管理系统</span>
+        </div>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span>管理员</span>
+        </div>
+    </header>
+    
+    <!-- 主体内容 -->
+    <div class="main-container">
+        <!-- 左侧菜单 -->
+        <aside class="sidebar">
+            <div class="menu">
+                <div class="menu-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>系统概览</span>
+                </div>
+                <div class="menu-item" data-page="books">
+                    <i class="fas fa-book"></i>
+                    <span>图书管理</span>
+                </div>
+                <div class="menu-item" data-page="readers">
+                    <i class="fas fa-users"></i>
+                    <span>读者管理</span>
+                </div>
+                <div class="menu-item" data-page="borrows">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>借阅管理</span>
+                </div>
+                <div class="menu-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 右侧内容区域 -->
+        <main class="content">
+            <!-- 系统概览页面 -->
+            <div id="dashboard-page">
+                <h2 class="page-title">系统概览</h2>
+                
+                <div class="stats-container">
+                    <div class="stat-card books">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>图书总数</h3>
+                            <p id="books-count">0</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card readers">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>注册读者</h3>
+                            <p id="readers-count">0</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card borrowed">
+                        <div class="stat-icon">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>在借图书</h3>
+                            <p id="borrowed-count">0</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card available">
+                        <div class="stat-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>可借图书</h3>
+                            <p id="available-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-container">
+                    <div class="chart-container">
+                        <h3>图书分类统计</h3>
+                        <canvas id="categoryChart" height="300"></canvas>
+                    </div>
+                    
+                    <div class="recent-container">
+                        <div class="recent-header">
+                            <h3>最近借阅记录</h3>
+                            <button class="btn btn-primary">查看全部</button>
+                        </div>
+                        <div class="recent-list" id="borrow-records">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 图书管理页面 -->
+            <div id="books-page" style="display: none;">
+                <h2 class="page-title">图书管理</h2>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>图书列表</h3>
+                        <button class="btn btn-primary" id="add-book-btn">
+                            <i class="fas fa-plus"></i> 添加图书
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>图书名称</th>
+                                    <th>作者</th>
+                                    <th>ISBN</th>
+                                    <th>分类</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="books-table">
+                                <!-- 动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 读者管理页面 -->
+            <div id="readers-page" style="display: none;">
+                <h2 class="page-title">读者管理</h2>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>读者列表</h3>
+                        <button class="btn btn-primary" id="add-reader-btn">
+                            <i class="fas fa-plus"></i> 添加读者
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>卡号</th>
+                                    <th>姓名</th>
+                                    <th>性别</th>
+                                    <th>联系方式</th>
+                                    <th>借书数量</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="readers-table">
+                                <!-- 动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 借阅管理页面 -->
+            <div id="borrows-page" style="display: none;">
+                <h2 class="page-title">借阅管理</h2>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>借阅记录</h3>
+                        <button class="btn btn-primary" id="add-borrow-btn">
+                            <i class="fas fa-plus"></i> 借阅图书
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>图书名称</th>
+                                    <th>读者姓名</th>
+                                    <th>借阅日期</th>
+                                    <th>应还日期</th>
+                                    <th>归还日期</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="borrows-table">
+                                <!-- 动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 添加图书模态框 -->
+    <div class="modal-overlay" id="book-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="book-modal-title">添加新图书</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="book-form">
+                    <input type="hidden" id="book-id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>图书名称</label>
+                            <input type="text" class="form-control" id="book-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>作者</label>
+                            <input type="text" class="form-control" id="book-author" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ISBN</label>
+                            <input type="text" class="form-control" id="book-isbn" required>
+                        </div>
+                        <div class="form-group">
+                            <label>出版社</label>
+                            <input type="text" class="form-control" id="book-publisher" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>出版日期</label>
+                            <input type="date" class="form-control" id="book-publish-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>定价</label>
+                            <input type="number" class="form-control" id="book-price" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>分类</label>
+                            <select class="form-control" id="book-category" required>
+                                <option value="">选择分类</option>
+                                <option value="文学">文学</option>
+                                <option value="历史">历史</option>
+                                <option value="科技">科技</option>
+                                <option value="教育">教育</option>
+                                <option value="艺术">艺术</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>图书状态</label>
+                            <select class="form-control" id="book-status" required>
+                                <option value="可借阅">可借阅</option>
+                                <option value="已借出">已借出</option>
+                                <option value="维护中">维护中</option>
+                                <option value="下架">下架</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>简介</label>
+                        <textarea class="form-control" id="book-description" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel">取消</button>
+                <button class="btn btn-primary" id="save-book-btn">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2023 图书管理系统 - 基于纯前端技术开发
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/layui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ========== 数据存储 ===========
+        // 图书数据存储
+        function saveBooks(books) {
+            localStorage.setItem('books', JSON.stringify(books));
+        }
+        
+        function getBooks() {
+            return JSON.parse(localStorage.getItem('books')) || [];
+        }
+        
+        // 读者数据存储
+        function saveReaders(readers) {
+            localStorage.setItem('readers', JSON.stringify(readers));
+        }
+        
+        function getReaders() {
+            return JSON.parse(localStorage.getItem('readers')) || [];
+        }
+        
+        // 借阅记录存储
+        function saveBorrows(borrows) {
+            localStorage.setItem('borrows', JSON.stringify(borrows));
+        }
+        
+        function getBorrows() {
+            return JSON.parse(localStorage.getItem('borrows')) || [];
+        }
+        
+        // ========== 页面功能 ===========
+        // 初始化模拟数据
+        function initializeSampleData() {
+            // 创建初始图书数据
+            const books = [
+                { id: 'B001', name: '三体', author: '刘慈欣', isbn: '9787208061642', publisher: '重庆出版社', publishDate: '2008-01-01', price: 39.00, category: '科幻', status: '可借阅', description: '地球往事三部曲之一' },
+                { id: 'B002', name: '平凡的世界', author: '路遥', isbn: '9787020049295', publisher: '人民文学出版社', publishDate: '2005-01-01', price: 79.00, category: '文学', status: '可借阅', description: '当代文学经典之作' },
+                { id: 'B003', name: '百年孤独', author: '加西亚·马尔克斯', isbn: '9787544253994', publisher: '南海出版公司', publishDate: '2011-06-01', price: 39.50, category: '文学', status: '已借出', description: '魔幻现实主义文学代表作' }
+            ];
+            
+            // 创建初始读者数据
+            const readers = [
+                { id: 'R001', name: '张三', gender: '男', phone: '13800138001', email: 'zhangsan@example.com', address: '北京市朝阳区', registerDate: '2023-01-15', borrowCount: 1 },
+                { id: 'R002', name: '李四', gender: '男', phone: '13900139002', email: 'lisi@example.com', address: '上海市浦东新区', registerDate: '2023-02-20', borrowCount: 2 },
+                { id: 'R003', name: '王五', gender: '女', phone: '13700137003', email: 'wangwu@example.com', address: '广州市天河区', registerDate: '2023-03-10', borrowCount: 0 }
+            ];
+            
+            // 创建初始借阅记录
+            const borrows = [
+                { id: 'BR001', bookId: 'B003', readerId: 'R001', borrowDate: '2023-05-10', shouldReturnDate: '2023-05-24', actualReturnDate: '' },
+                { id: 'BR002', bookId: 'B001', readerId: 'R002', borrowDate: '2023-05-08', shouldReturnDate: '2023-05-22', actualReturnDate: '2023-05-18' }
+            ];
+            
+            if (!localStorage.getItem('books')) {
+                saveBooks(books);
+            }
+            
+            if (!localStorage.getItem('readers')) {
+                saveReaders(readers);
+            }
+            
+            if (!localStorage.getItem('borrows')) {
+                saveBorrows(borrows);
+            }
+        }
+        
+        // 渲染图书列表
+        function renderBooks() {
+            const books = getBooks();
+            const tbody = document.getElementById('books-table');
+            tbody.innerHTML = '';
+            
+            books.forEach(book => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${book.id}</td>
+                    <td>${book.name}</td>
+                    <td>${book.author}</td>
+                    <td>${book.isbn}</td>
+                    <td>${book.category}</td>
+                    <td>
+                        <span class="status-badge ${book.status === '可借阅' ? 'status-available' : 'status-borrowed'}">
+                            ${book.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editBook('${book.id}')">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deleteBook('${book.id}')">
+                            <i class="fas fa-trash-alt"></i> 删除
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        // 渲染读者列表
+        function renderReaders() {
+            const readers = getReaders();
+            const tbody = document.getElementById('readers-table');
+            tbody.innerHTML = '';
+            
+            readers.forEach(reader => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${reader.id}</td>
+                    <td>${reader.name}</td>
+                    <td>${reader.gender}</td>
+                    <td>${reader.phone}</td>
+                    <td>${reader.borrowCount}</td>
+                    <td>
+                        <span class="status-badge ${reader.borrowCount > 0 ? 'status-borrowed' : 'status-available'}">
+                            ${reader.borrowCount > 0 ? '有借阅' : '无借阅'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editReader('${reader.id}')">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deleteReader('${reader.id}')">
+                            <i class="fas fa-trash-alt"></i> 删除
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        // 渲染借阅记录列表
+        function renderBorrows() {
+            const borrows = getBorrows();
+            const books = getBooks();
+            const readers = getReaders();
+            
+            const tbody = document.getElementById('borrows-table');
+            tbody.innerHTML = '';
+            
+            borrows.forEach((borrow, index) => {
+                const book = books.find(b => b.id === borrow.bookId) || {};
+                const reader = readers.find(r => r.id === borrow.readerId) || {};
+                const isReturned = !!borrow.actualReturnDate;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${book.name || '未知'}</td>
+                    <td>${reader.name || '未知'}</td>
+                    <td>${borrow.borrowDate}</td>
+                    <td>${borrow.shouldReturnDate}</td>
+                    <td>${isReturned ? borrow.actualReturnDate : '未归还'}</td>
+                    <td>
+                        <span class="status-badge ${isReturned ? 'status-available' : 'status-borrowed'}">
+                            ${isReturned ? '已归还' : '借出中'}
+                        </span>
+                    </td>
+                    <td>
+                        ${isReturned ? '' : `
+                            <button class="action-btn btn-success" onclick="returnBook('${borrow.id}')">
+                                <i class="fas fa-book-medical"></i> 归还
+                            </button>
+                        `}
+                        <button class="action-btn btn-delete" onclick="deleteBorrow('${borrow.id}')">
+                            <i class="fas fa-trash-alt"></i> 删除
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        // 渲染统计信息
+        function renderDashboardStats() {
+            const books = getBooks();
+            const readers = getReaders();
+            const borrows = getBorrows().filter(b => !b.actualReturnDate);
+            
+            document.getElementById('books-count').textContent = books.length;
+            document.getElementById('readers-count').textContent = readers.length;
+            document.getElementById('borrowed-count').textContent = borrows.length;
+            document.getElementById('available-count').textContent = 
+                books.filter(b => b.status === '可借阅').length;
+            
+            renderRecentBorrows();
+            renderBookCategoryChart();
+        }
+        
+        // 渲染最近借阅记录
+        function renderRecentBorrows() {
+            const borrows = getBorrows();
+            const books = getBooks();
+            const readers = getReaders();
+            
+            const recent = [...borrows]
+                .sort((a, b) => new Date(b.borrowDate) - new Date(a.borrowDate))
+                .slice(0, 4)
+                .map(borrow => {
+                    const book = books.find(b => b.id === borrow.bookId) || {};
+                    const reader = readers.find(r => r.id === borrow.readerId) || {};
+                    const isReturned = !!borrow.actualReturnDate;
+                    
+                    return {
+                        id: borrow.id,
+                        book: book.name || '未知',
+                        reader: reader.name || '未知',
+                        date: borrow.borrowDate,
+                        status: isReturned ? '归还' : '借出'
+                    };
+                });
+            
+            const container = document.getElementById('borrow-records');
+            container.innerHTML = '';
+            
+            recent.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'recent-item';
+                div.innerHTML = `
+                    <div class="recent-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="recent-content">
+                        <h4>${item.reader} ${item.status}了《${item.book}》</h4>
+                        <p>${item.date}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // 渲染图书分类图表
+        function renderBookCategoryChart() {
+            const books = getBooks();
+            const categories = {};
+            
+            books.forEach(book => {
+                if (!categories[book.category]) {
+                    categories[book.category] = 0;
+                }
+                categories[book.category]++;
+            });
+            
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            if (window.bookChart) window.bookChart.destroy();
+            
+            window.bookChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: [
+                            '#3498db',
+                            '#2ecc71',
+                            '#9b59b6',
+                            '#e74c3c',
+                            '#f1c40f',
+                            '#1abc9c'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 编辑图书
+        function editBook(bookId) {
+            const books = getBooks();
+            const book = books.find(b => b.id === bookId);
+            
+            if (book) {
+                document.getElementById('book-modal-title').textContent = '编辑图书';
+                document.getElementById('book-id').value = book.id;
+                document.getElementById('book-name').value = book.name;
+                document.getElementById('book-author').value = book.author;
+                document.getElementById('book-isbn').value = book.isbn;
+                document.getElementById('book-publisher').value = book.publisher;
+                document.getElementById('book-publish-date').value = book.publishDate;
+                document.getElementById('book-price').value = book.price;
+                document.getElementById('book-category').value = book.category;
+                document.getElementById('book-status').value = book.status;
+                document.getElementById('book-description').value = book.description || '';
+                
+                openModal('book-modal');
+            }
+        }
+        
+        // 删除图书
+        function deleteBook(bookId) {
+            if (confirm('确定要删除这本书吗？')) {
+                let books = getBooks();
+                books = books.filter(book => book.id !== bookId);
+                saveBooks(books);
+                renderBooks();
+                renderDashboardStats();
+                showNotification('图书已删除', 'success');
+            }
+        }
+        
+        // 保存图书
+        function saveBook() {
+            const id = document.getElementById('book-id').value;
+            const name = document.getElementById('book-name').value;
+            const author = document.getElementById('book-author').value;
+            const isbn = document.getElementById('book-isbn').value;
+            const publisher = document.getElementById('book-publisher').value;
+            const publishDate = document.getElementById('book-publish-date').value;
+            const price = parseFloat(document.getElementById('book-price').value);
+            const category = document.getElementById('book-category').value;
+            const status = document.getElementById('book-status').value;
+            const description = document.getElementById('book-description').value;
+            
+            if (!name || !author) {
+                showNotification('请填写图书名称和作者', 'error');
+                return;
+            }
+            
+            let books = getBooks();
+            
+            if (id) {
+                // 编辑
+                books = books.map(book => {
+                    if (book.id === id) {
+                        return {...book, name, author, isbn, publisher, publishDate, price, category, status, description};
+                    }
+                    return book;
+                });
+            } else {
+                // 新增
+                const newId = 'B' + (books.length + 1).toString().padStart(3, '0');
+                const newBook = {
+                    id: newId,
+                    name,
+                    author,
+                    isbn,
+                    publisher,
+                    publishDate,
+                    price,
+                    category,
+                    status,
+                    description
+                };
+                books.push(newBook);
+            }
+            
+            saveBooks(books);
+            renderBooks();
+            renderDashboardStats();
+            closeModal('book-modal');
+            showNotification('图书保存成功', 'success');
+        }
+        
+        // 打开模态框
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // 显示通知
+        function showNotification(message, type) {
+            layer.msg(message, {
+                icon: type === 'success' ? 1 : 2,
+                time: 2000
+            });
+        }
+        
+        // 页面切换
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById(pageId).style.display = 'block';
+        }
+        
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSampleData();
+            
+            // 渲染所有页面数据
+            renderBooks();
+            renderReaders();
+            renderBorrows();
+            renderDashboardStats();
+            
+            // 菜单点击事件
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    const pageId = this.getAttribute('data-page') + '-page';
+                    switchPage(pageId);
+                });
+            });
+            
+            // 添加图书按钮
+            document.getElementById('add-book-btn').addEventListener('click', function() {
+                document.getElementById('book-modal-title').textContent = '添加新图书';
+                document.getElementById('book-form').reset();
+                document.getElementById('book-id').value = '';
+                document.getElementById('book-status').value = '可借阅';
+                openModal('book-modal');
+            });
+            
+            // 保存图书按钮
+            document.getElementById('save-book-btn').addEventListener('click', saveBook);
+            
+            // 模态框关闭按钮
+            document.querySelectorAll('.modal-close, .btn-cancel').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    closeModal('book-modal');
+                });
+            });
+            
+            // 模态框外部点击关闭
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeModal(this.id);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

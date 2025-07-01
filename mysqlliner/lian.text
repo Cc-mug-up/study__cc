@@ -1,0 +1,1 @@
+g++ "test_connect.cpp" -o "test_connect" -I "C:\Program Files\MySQL\MySQL Server 8.0\include" -L "C:\Program Files\MySQL\MySQL Server 8.0\lib" -llibmysql
