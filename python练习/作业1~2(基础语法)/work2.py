@@ -1,0 +1,7 @@
+a=int(input('please input a int type number:'))
+b=int(input('please input a int type number:'))
+print(a+b)
+print(a-b)
+print(a*b)
+print(a/b)
+print(a//b)

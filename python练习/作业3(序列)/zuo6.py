@@ -1,0 +1,8 @@
+list1=range(1,11,1)
+print(list(list1))
+list2=range(10,0,-1)
+print(list(list2))
+list3=range(2,21,2)
+print(list(list3))
+list4=range(5,51,5)
+print(list(list4))

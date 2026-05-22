@@ -9,7 +9,7 @@ bool isincludseven(int t)
     {
         if (tem[i] == '7')
             return true;
-    }
+    }D:\86189\QT\6.9.1\Src\qtbase\src\plugins\sqldrivers\mysql
     return false;
 }
 int main()

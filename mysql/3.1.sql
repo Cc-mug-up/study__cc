@@ -104,3 +104,34 @@ WHERE
     TABLE_NAME = 'student';
 
 alter table animal ADD col4 char(20);
+
+SHOW DATABASES;
+
+SELECT host, user FROM mysql.user WHERE user='root';
+
+SHOW PROCESSLIST;
+SHOW PROCESSLIST;
+SHOW VARIABLES LIKE 'bind_address';
+SELECT host, user FROM mysql.user WHERE user = 'root';
+SHOW VARIABLES LIKE 'bind_address';
+
+SELECT host, user FROM mysql.user WHERE user='root';
+
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY '134121';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+FLUSH PRIVILEGES;
+
+-- 1. 删除旧用户
+DROP USER IF EXISTS 'root'@'%';
+
+-- 2. 创建新用户（使用 mysql_native_password）
+CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '134121';
+
+-- 3. 授权
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+
+-- 4. 刷新权限
+FLUSH PRIVILEGES;
+
+-- 5. 确认数据库存在
+CREATE DATABASE IF NOT EXISTS project1 CHARACTER SET utf8mb4;

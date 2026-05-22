@@ -1,0 +1,5 @@
+fp=open(r'python练习\作业7\testseek.dat','rb+')
+fp.tell()
+print(fp.read(5))
+print(fp.tell())
+fp.close()

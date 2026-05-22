@@ -77,6 +77,8 @@
     },
     "code-runner.executorMap": {
         "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt -I 'C:\\Program Files\\MySQL\\MySQL Server 8.0\\include' && $dir$fileNameWithoutExt",
-    }
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "cmake.sourceDirectory": "D:/86189/vscode/opencv"
 }
 

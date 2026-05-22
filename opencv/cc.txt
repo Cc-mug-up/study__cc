@@ -1,0 +1,2 @@
+cmake --build . --config Release --target install
+find_package(OpenCV REQUIRED PATHS "D:/opencv/build/x64/cctest/install")

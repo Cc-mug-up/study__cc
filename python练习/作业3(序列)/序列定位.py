@@ -1,0 +1,10 @@
+aList=['Mon','Tues','Wed','Thur','Fri','Sat','Sun']
+print(aList[0:5])
+print(aList[:5])
+print(aList[5:7])
+print(aList[-2:-1])
+print(aList[-3:])
+print(aList[-4:-2])
+print(aList[:])
+print(aList[1:6:2])
+print(aList[5:0:-2])

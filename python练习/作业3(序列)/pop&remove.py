@@ -1,0 +1,10 @@
+scores = [7,8,8,8,8.5,9,9,9,10,10]
+print(scores)
+print(scores.pop())
+print(scores)
+print(scores.pop(4))
+print(scores)
+print(scores.remove(9))
+print(scores)
+scores.sort(reverse=True)
+print(scores)
